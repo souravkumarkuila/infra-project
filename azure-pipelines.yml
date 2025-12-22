@@ -44,6 +44,19 @@ stages:
             command: 'plan'
             workingDirectory: '$(System.DefaultWorkingDirectory)/environment/dev'
             environmentServiceNameAzureRM: 'infraprojectsc'
+            
+  - stage: securityScan
+    displayName: Security Scan
+    jobs:
+      - job: tfsec
+        displayName: tfsec
+        steps:
+        - task: tfsec@1
+          displayName: tfsec
+          inputs:
+            version: 'v1.26.0'
+            publishTestResults: false
+            dir: '$(System.DefaultWorkingDirectory)'
   # - stage: securityscanning
   #   displayName: security scanning
   #   jobs:
