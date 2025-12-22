@@ -20,6 +20,7 @@ stages:
             terraformVersion: 'latest'
 
         - task: TerraformTask@5
+          displayName: Terraforminit
           inputs:
             provider: 'azurerm'
             command: 'init'
@@ -29,13 +30,20 @@ stages:
             backendAzureRmContainerName: 'souravcontainfrapro'
             backendAzureRmKey: 'dev.terraform.tfstate'
 
-        # - task: TerraformTask@5
-        #   displayName: Terraformplan
-        #   inputs:
-        #     provider: 'azurerm'
-        #     command: 'plan'
-        #     workingDirectory: '$(System.DefaultWorkingDirectory)/env/${{parameters.env}}'
-        #     environmentServiceNameAzureRM: 'infraserviceconnect'
+        - task: TerraformTask@5
+          displayName: Terraformvalidate
+          inputs:
+            provider: 'azurerm'
+            command: 'validate'
+            workingDirectory: '$(System.DefaultWorkingDirectory)/environment/dev'
+
+        - task: TerraformTask@5
+          displayName: Terraformplan
+          inputs:
+            provider: 'azurerm'
+            command: 'plan'
+            workingDirectory: '$(System.DefaultWorkingDirectory)/environment/dev'
+            environmentServiceNameAzureRM: 'infraprojectsc'
   # - stage: securityscanning
   #   displayName: security scanning
   #   jobs:
