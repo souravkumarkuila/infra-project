@@ -57,18 +57,24 @@ stages:
             version: 'v1.26.0'
             publishTestResults: false
             dir: '$(System.DefaultWorkingDirectory)'
-  # - stage: securityscanning
-  #   displayName: security scanning
-  #   jobs:
-  #     - job: scanjob
-  #       continueOnError: true
-  #       displayName: security scanning
-  #       steps:
-  #       - task: PowerShell@2
-  #         inputs:
-  #           targetType: 'inline'
-  #           script: 'tflint --chdir=DIR/--recursive'
-  #           workingDirectory: '$(System.DefaultWorkingDirectory)'
+
+      - job: tflint
+        displayName: tflint
+        steps:
+        - task: CmdLine@2
+          continueOnError: true
+          displayName: tflint
+          inputs:
+            script: 'tflint --recursive /f junit > tflint-out.xml'
+            workingDirectory: '$(System.DefaultWorkingDirectory)'
+
+        - task: PublishTestResults@2
+          displayName: tflint result publish
+          inputs:
+            testResultsFormat: 'JUnit'
+            testResultsFiles: 'tflint-out.xml'
+            testRunTitle: 'tflint'
+ 
         
   #       - task: PowerShell@2
   #         inputs:
