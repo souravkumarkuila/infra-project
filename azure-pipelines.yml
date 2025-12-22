@@ -16,27 +16,18 @@ stages:
         displayName: Terraform init plan
         steps:
         - task: TerraformInstaller@1
-          displayName: Terraform install
           inputs:
             terraformVersion: 'latest'
+
         - task: TerraformTask@5
-          displayName: Terraforminit
           inputs:
             provider: 'azurerm'
             command: 'init'
-            workingDirectory: '$(System.DefaultWorkingDirectory)/env/${{parameters.env}}'
+            workingDirectory: '$(System.DefaultWorkingDirectory)/environment/dev'
             backendServiceArm: 'infraprojectsc'
-            backendAzureRmResourceGroupName: 'souravrginfrapro'
             backendAzureRmStorageAccountName: 'souravsginfrapro'
             backendAzureRmContainerName: 'souravcontainfrapro'
             backendAzureRmKey: 'dev.terraform.tfstate'
-        
-        - task: TerraformTask@5
-          displayName: Terraformvalidate
-          inputs:
-            provider: 'azurerm'
-            command: 'validate'
-            workingDirectory: '$(System.DefaultWorkingDirectory)/env/${{parameters.env}}'
 
         # - task: TerraformTask@5
         #   displayName: Terraformplan
