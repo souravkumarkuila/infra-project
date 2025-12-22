@@ -1,0 +1,67 @@
+trigger: none
+parameters:
+  - name: env
+    displayName: Environment
+    type: string
+    default: dev
+    values:
+      - dev
+      - qa
+pool: infrapool
+stages:
+  - stage: initvalidateplan
+    displayName: Terraform init validate plan
+    jobs:
+      - job: initplan
+        displayName: Terraform init plan
+        steps:
+        - task: TerraformInstaller@1
+          displayName: Terraform install
+          inputs:
+            terraformVersion: 'latest'
+        - task: TerraformTask@5
+          displayName: Terraforminit
+          inputs:
+            provider: 'azurerm'
+            command: 'init'
+            workingDirectory: '$(System.DefaultWorkingDirectory)/env/${{parameters.env}}'
+            backendServiceArm: 'infraserviceconnect'
+            backendAzureRmResourceGroupName: 'rg-todoappproj'
+            backendAzureRmStorageAccountName: 'sgtodoapppro'
+            backendAzureRmContainerName: 'conttodoapppro'
+            backendAzureRmKey: 'dev.terraform.tfstate'
+        
+        - task: TerraformTask@5
+          displayName: Terraformvalidate
+          inputs:
+            provider: 'azurerm'
+            command: 'validate'
+            workingDirectory: '$(System.DefaultWorkingDirectory)/env/${{parameters.env}}'
+
+        - task: TerraformTask@5
+          displayName: Terraformplan
+          inputs:
+            provider: 'azurerm'
+            command: 'plan'
+            workingDirectory: '$(System.DefaultWorkingDirectory)/env/${{parameters.env}}'
+            environmentServiceNameAzureRM: 'infraserviceconnect'
+  - stage: securityscanning
+    displayName: security scanning
+    jobs:
+      - job: scanjob
+        continueOnError: true
+        displayName: security scanning
+        steps:
+        - task: PowerShell@2
+          inputs:
+            targetType: 'inline'
+            script: 'tflint --chdir=DIR/--recursive'
+            workingDirectory: '$(System.DefaultWorkingDirectory)'
+        
+        - task: PowerShell@2
+          inputs:
+            targetType: 'inline'
+            script: |
+              cd $(System.DefaultWorkingDirectory)
+              infracost configure set api key ico-RDPlxzyPFP1pDz5hCEFFCViMAtq2bK3X
+
