@@ -1,4 +1,4 @@
-resource "azurerm_subnet" "ankit_subnet" {
+resource "azurerm_subnet" "sourav_subnet" {
   for_each = var.subnet_config
   name                 = each.value.subnet_name
   resource_group_name  = each.value.resource_group_name

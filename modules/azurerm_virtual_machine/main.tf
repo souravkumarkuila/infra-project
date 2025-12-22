@@ -1,4 +1,4 @@
-resource "azurerm_linux_virtual_machine" "ankit_linux_vm" {
+resource "azurerm_linux_virtual_machine" "sourav_linux_vm" {
   for_each = var.vm_config
   name                            = each.value.vm_name
   resource_group_name             = each.value.resource_group_name

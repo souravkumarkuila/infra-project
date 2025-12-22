@@ -1,4 +1,4 @@
-resource "azurerm_public_ip" "ankit_public_ip" {
+resource "azurerm_public_ip" "sourav_public_ip" {
   for_each = var.ip_config
   name                = each.value.public_ip_name
   location            = each.value.resource_group_location

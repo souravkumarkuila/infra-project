@@ -1,4 +1,4 @@
-resource "azurerm_virtual_network" "polaris-vnet" {
+resource "azurerm_virtual_network" "sourav-vnet" {
   for_each = var.vnet_config
   name                = each.value.virtual_network_name
   address_space       = each.value.address_space
