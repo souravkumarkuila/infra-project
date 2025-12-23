@@ -75,18 +75,35 @@ stages:
             testResultsFiles: 'tflint-out.xml'
             testRunTitle: 'tflint'
 
-  - stage: approvalAndApply
-    displayName: Approval and Apply
-    jobs:
-      - job: approval
-        pool: server
-        displayName: approval
+      - job: checkov
+        dependsOn: tflint
+        displayName: checkov
         steps:
-        - task: ManualValidation@1
-          displayName: Approval
+        - task: CmdLine@2
+          displayName: checkov
+          continueOnError: true
           inputs:
-            notifyUsers: 'kuila.sourav1999@gmail.com'
-            approvers: 'kuila.sourav1999@gmail.com'
+            script: 'checkov -d . -o junitxml > checkov-out.xml'
+            workingDirectory: '$(System.DefaultWorkingDirectory)'
+        - task: PublishTestResults@2
+          displayName: checkov-publish
+          inputs:
+            testResultsFormat: 'JUnit'
+            testResultsFiles: 'checkov-out.xml'
+            testRunTitle: 'checkov'
+
+  # - stage: approvalAndApply
+  #   displayName: Approval and Apply
+  #   jobs:
+  #     - job: approval
+  #       pool: server
+  #       displayName: approval
+  #       steps:
+  #       - task: ManualValidation@1
+  #         displayName: Approval
+  #         inputs:
+  #           notifyUsers: 'kuila.sourav1999@gmail.com'
+  #           approvers: 'kuila.sourav1999@gmail.com'
   #       - task: PowerShell@2
   #         inputs:
   #           targetType: 'inline'
