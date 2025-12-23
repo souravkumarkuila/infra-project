@@ -92,6 +92,24 @@ stages:
             testResultsFiles: 'checkov-out.xml'
             testRunTitle: 'checkov'
 
+  - stage: costEstimation
+    displayName: Cost Estimation
+    jobs:
+      - job: infracost
+        displayName: infracost
+        steps:
+        - task: CmdLine@2
+          displayName: infracost
+          inputs:
+            script: 'infracost breakdown --path . --format=html > cost-out.html'
+            workingDirectory: '$(System.DefaultWorkingDirectory)'
+
+        - task: PublishBuildArtifacts@1
+          displayName: publish cost
+          inputs:
+            PathtoPublish: '$(System.DefaultWorkingDirectory)/cost-out.html'
+            ArtifactName: 'costing'
+            publishLocation: 'Container'
   # - stage: approvalAndApply
   #   displayName: Approval and Apply
   #   jobs:
