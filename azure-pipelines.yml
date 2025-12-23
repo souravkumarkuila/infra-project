@@ -74,8 +74,19 @@ stages:
             testResultsFormat: 'JUnit'
             testResultsFiles: 'tflint-out.xml'
             testRunTitle: 'tflint'
- 
-        
+
+  - stage: approvalAndApply
+    displayName: Approval and Apply
+    jobs:
+      - job: approval
+        pool: server
+        displayName: approval
+        steps:
+        - task: ManualValidation@1
+          displayName: Approval
+          inputs:
+            notifyUsers: 'kuila.sourav1999@gmail.com'
+            approvers: 'kuila.sourav1999@gmail.com'
   #       - task: PowerShell@2
   #         inputs:
   #           targetType: 'inline'
